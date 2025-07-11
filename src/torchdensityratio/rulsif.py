@@ -102,7 +102,9 @@ def _sigma_lambd_cv(
     Binv_Y = torch.linalg.solve(B, phis_y)
     denom = ny - (phis_y * Binv_Y).sum(2, keepdim=True)  # sum over rows
     B0 = torch.linalg.solve(B, h) + Binv_Y * (h.mT @ Binv_Y / denom)
-    B1 = torch.linalg.solve(B, phis_x) + Binv_Y * (phis_x * Binv_Y).sum(2, keepdim=True)
+    B1 = torch.linalg.solve(B, phis_x) + Binv_Y * (
+        (phis_x * Binv_Y).sum(2, keepdim=True) / denom
+    )
     B2 = ((ny - 1) / (ny * (nx - 1)) * (nx * B0 - B1)).clamp_min(0)
 
     w_y = (phis_y * B2).sum(2)
