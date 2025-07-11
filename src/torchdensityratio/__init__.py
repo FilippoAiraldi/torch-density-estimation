@@ -25,7 +25,7 @@ References
        pp.1391-1445.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 __all__ = ["rulsif_fit", "rulsif_predict"]
 
