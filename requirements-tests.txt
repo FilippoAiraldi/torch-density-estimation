@@ -1,2 +1,1 @@
 numpy==2.3.1
-densratio==0.3.0
