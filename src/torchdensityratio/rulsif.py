@@ -33,7 +33,8 @@ def rulsif_fit(
         generator.manual_seed(seed)
     else:
         generator = None
-    centers = x[torch.randint(0, nx, (kernel_num,), generator=generator, device=device)]
+    idx = torch.randperm(nx, generator=generator, device=device)[:kernel_num]
+    centers = x[idx]
 
     if sigma is None:
         sigma = torch.logspace(-4, 9, 14, device=device, dtype=dtype)
