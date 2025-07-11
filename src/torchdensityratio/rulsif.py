@@ -86,6 +86,8 @@ def rulsif_fit(
         generator = None
     idx = torch.randperm(nx, generator=generator, device=device)[:kernel_num]
     centers = x[idx]
+    dist_x_centers = torch.cdist(x, centers).square()
+    dist_y_centers = torch.cdist(y, centers).square()
 
     if sigma is None:
         sigma = torch.logspace(-4, 9, 14, device=device, dtype=dtype)
@@ -100,11 +102,13 @@ def rulsif_fit(
     else:
         lambd = torch.as_tensor(lambd, device=device, dtype=dtype)
     if sigma.shape[0] > 1 or lambd.shape[0] > 1:
-        sigma, lambd = _sigma_lambd_cv(x, y, alpha, centers, sigma, lambd)
+        sigma, lambd = _sigma_lambd_cv(
+            nx, ny, dist_x_centers, dist_y_centers, alpha, sigma, lambd
+        )
 
     neg_half_prec = -0.5 * sigma.square().reciprocal()
-    phi_x = (neg_half_prec * torch.cdist(x, centers).square()).exp()
-    phi_y = (neg_half_prec * torch.cdist(y, centers).square()).exp()
+    phi_x = (neg_half_prec * dist_x_centers).exp()
+    phi_y = (neg_half_prec * dist_y_centers).exp()
     H = (1 - alpha) / ny * phi_y.T @ phi_y
     if alpha > 0:
         H += alpha / nx * phi_x.T @ phi_x
@@ -148,23 +152,22 @@ def rulsif_predict(mdl: RuLSIFModel, x: Tensor) -> Tensor:
 
 
 def _sigma_lambd_cv(
-    x: Tensor,
-    y: Tensor,
+    nx: int,
+    ny: int,
+    dist_x_centers: Tensor,
+    dist_y_centers: Tensor,
     alpha: float,
-    centers: Tensor,
     sigmas: Tensor,
     lambds: Tensor,
 ) -> tuple[Tensor, Tensor]:
     """Computes the optimal sigma and lambda parameters for RuLSIF using
     leave-one-out cross-validation."""
-    nx = x.shape[0]
-    ny = y.shape[0]
     n_lambds = lambds.shape[0]
     n_min = min(nx, ny)
 
     neg_half_precs = (-0.5 * sigmas.square().reciprocal())[:, None, None]
-    phis_x_ = (neg_half_precs * torch.cdist(x, centers).square()).exp()
-    phis_y_ = (neg_half_precs * torch.cdist(y, centers).square()).exp()
+    phis_x_ = (neg_half_precs * dist_x_centers).exp()
+    phis_y_ = (neg_half_precs * dist_y_centers).exp()
     H = (1 - alpha) / ny * phis_y_.mT @ phis_y_
     if alpha > 0:
         H += alpha / nx * phis_x_.mT @ phis_x_
