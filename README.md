@@ -11,8 +11,8 @@ follows a functional paradigm.
 
 [![Tests](https://github.com/FilippoAiraldi/torch-density-ratio/actions/workflows/tests.yml/badge.svg)](https://github.com/FilippoAiraldi/torch-density-ratio/actions/workflows/tests.yml)
 [![Downloads](https://static.pepy.tech/badge/torchdensityratio)](https://www.pepy.tech/projects/torchdensityratio)
-<!-- [![Maintainability](https://api.codeclimate.com/v1/badges/746f504e874cffeedae2/maintainability)](https://codeclimate.com/github/FilippoAiraldi/torch-density-ratio/maintainability) -->
-<!-- [![Test Coverage](https://api.codeclimate.com/v1/badges/746f504e874cffeedae2/test_coverage)](https://codeclimate.com/github/FilippoAiraldi/torch-density-ratio/test_coverage) -->
+[![Maintainability](https://qlty.sh/gh/FilippoAiraldi/projects/torch-density-ratio/maintainability.svg)](https://qlty.sh/gh/FilippoAiraldi/projects/torch-density-ratio)
+[![Code Coverage](https://qlty.sh/gh/FilippoAiraldi/projects/torch-density-ratio/coverage.svg)](https://qlty.sh/gh/FilippoAiraldi/projects/torch-density-ratio)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://docs.astral.sh/ruff/)
 
 ---
