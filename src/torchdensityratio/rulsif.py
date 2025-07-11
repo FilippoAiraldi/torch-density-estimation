@@ -17,6 +17,57 @@ def rulsif_fit(
     kernel_num: int = 100,
     seed: int | None = None,
 ) -> RuLSIFModel:
+    r"""Fits a Relative Unconstrained Least-Squares Importance Fitting (RuLSIF) model to
+    the given data `x` and `y`. The model estimates relative ratio
+
+    .. math::
+        r(x) = \frac{p(x)}{\alpha p(x) + (1 - \alpha) q(x)}
+
+    where `p` and `q` are the densities of samples `x` and `y`, respectively.
+
+    Parameters
+    ----------
+    x : Tensor
+        Samples from `p(x)`, shape `(n_samples_x, n_features)`.
+    y : Tensor
+        Samples from `q(x)`, shape `(n_samples_y, n_features)`.
+    alpha : float, optional
+        The relative weights in the ratio denominator, by default 0.0.
+    sigma : float or Tensor, optional
+        The bandwidth of the Gaussian kernel used for the density estimation. If `None`,
+        a range of values will be automatically selected and the optimal value selected
+        by leave-one-out cross-validation. The same if a tensor of values is provided.
+        If a single float value is provided, it will be used as the bandwidth, without
+        cross-validation. By default, `None`.
+    lambd : float or Tensor, optional
+        The regularization parameter used for the density estimation. If `None`, a range
+        of values will be automatically selected and the optimal value selected by
+        leave-one-out cross-validation. The same if a tensor of values is provided. If a
+        single float value is provided, it will be used as the regularization, without
+        cross-validation. By default, `None`.
+    kernel_num : int, optional
+        The number of kernel centers to use for the density estimation. If the number of
+        samples in `x` is less than `kernel_num`, this will be set to `n_samples_x`. By
+        default, `100`.
+    seed : int, optional
+        The random seed for selecting the kernel centers. If `None`, a random seed will
+        be generated. By default, `None`.
+
+    Returns
+    -------
+    RuLSIFModel
+        A named tuple containing the fitted model parameters:
+          - `negative_half_precision`: optimal negative half precision of the kernel
+          - `regularization`: optimal regularization parameter
+          - `centers`: kernel centers
+          - `coeffs`: coefficients for the linear combination of kernels
+
+    Raises
+    ------
+    ValueError
+        If `x` or `y` is not a 2-dimensional tensor, or if the number of features in
+        `x` and `y` do not match.
+    """
     if x.ndim != 2 or y.ndim != 2:
         raise ValueError("x and y must be 2-dimensional arrays.")
     if x.shape[1] != y.shape[1]:
@@ -65,6 +116,28 @@ def rulsif_fit(
 
 
 def rulsif_predict(mdl: RuLSIFModel, x: Tensor) -> Tensor:
+    """Predicts the density ratio for the given input `x` using the RuLSIF fitted model.
+
+    Parameters
+    ----------
+    mdl : RuLSIFModel
+        The fitted RuLSIF model (see `rulsif_fit`).
+    x : Tensor
+        The input data for which to predict the density ratio. Must be a 2D tensor of
+        shape `(n_samples, n_features)`, where `n_features` matches the number of
+        features used during the model fitting.
+
+    Returns
+    -------
+    Tensor
+        The predicted density ratio for each row in `x`. The shape is `(n_samples,)`.
+
+    Raises
+    ------
+    ValueError
+        If `x` is not a 2-dimensional tensor or if the number of features in `x` does
+        not match the number of features used during the model fitting.
+    """
     if x.ndim != 2:
         raise ValueError("x must be a 2-dimensional array.")
     centers = mdl.centers
@@ -82,6 +155,8 @@ def _sigma_lambd_cv(
     sigmas: Tensor,
     lambds: Tensor,
 ) -> tuple[Tensor, Tensor]:
+    """Computes the optimal sigma and lambda parameters for RuLSIF using
+    leave-one-out cross-validation."""
     nx = x.shape[0]
     ny = y.shape[0]
     n_lambds = lambds.shape[0]

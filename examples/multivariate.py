@@ -43,4 +43,8 @@ axs[0].contourf(vals_np, vals_np, target, levels=levels)
 axs[0].set_title("True density ratio")
 axs[1].contourf(vals_np, vals_np, predicted.numpy(), levels=levels)
 axs[1].set_title("RuLSIF density ratio")
+for ax in axs:
+    ax.set_aspect("equal")
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
 plt.show()
