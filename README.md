@@ -9,7 +9,7 @@ follows a functional paradigm.
 [![Source Code License](https://img.shields.io/badge/license-MIT-blueviolet)](https://github.com/FilippoAiraldi/torch-density-ratio/blob/master/LICENSE)
 ![Python 3.10](https://img.shields.io/badge/python->=3.10-green.svg)
 
-<!-- [![Tests](https://github.com/FilippoAiraldi/torch-density-ratio/actions/workflows/ci.yml/badge.svg)](https://github.com/FilippoAiraldi/torch-density-ratio/actions/workflows/ci.yml) -->
+[![Tests](https://github.com/FilippoAiraldi/torch-density-ratio/actions/workflows/tests.yml/badge.svg)](https://github.com/FilippoAiraldi/torch-density-ratio/actions/workflows/tests.yml)
 [![Downloads](https://static.pepy.tech/badge/torchdensityratio)](https://www.pepy.tech/projects/torchdensityratio)
 <!-- [![Maintainability](https://api.codeclimate.com/v1/badges/746f504e874cffeedae2/maintainability)](https://codeclimate.com/github/FilippoAiraldi/torch-density-ratio/maintainability) -->
 <!-- [![Test Coverage](https://api.codeclimate.com/v1/badges/746f504e874cffeedae2/test_coverage)](https://codeclimate.com/github/FilippoAiraldi/torch-density-ratio/test_coverage) -->
@@ -145,7 +145,7 @@ this repository.
 > [Delft Center for Systems and Control](https://www.tudelft.nl/en/me/about/departments/delft-center-for-systems-and-control/)
 in [Delft University of Technology](https://www.tudelft.nl/en/)
 
-Copyright (c) 2024 Filippo Airaldi.
+Copyright (c) 2025 Filippo Airaldi.
 
 Copyright notice: Technische Universiteit Delft hereby disclaims all copyright interest
 in the program “csnlp” (Nonlinear Progamming with CasADi) written by the Author(s).
