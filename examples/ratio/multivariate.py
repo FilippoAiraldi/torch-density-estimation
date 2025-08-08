@@ -2,7 +2,6 @@ import numpy as np
 import torch
 from matplotlib import pyplot as plt
 from scipy.stats import multivariate_normal as mvnorm
-
 from torchdensityratio import rulsif_fit, rulsif_predict
 
 # define the two multivariate normal distributions
