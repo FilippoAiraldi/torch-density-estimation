@@ -1,12 +1,13 @@
-r"""**torchdensityratio** is a package for density ratio estimation based on PyTorch.
+r"""**torchdensityestimation** is a package for the estimation of density transforms
+(ratio, difference, etc.) based on PyTorch.
 
-==================== =======================================================
-**Download**             https://pypi.python.org/pypi/torchdensityratio/
+==================== =====================================================================
+**Download**             https://pypi.python.org/pypi/torchdensityestimation/
 
-**Source code**          https://github.com/FilippoAiraldi/torch-density-ratio/
+**Source code**          https://github.com/FilippoAiraldi/torch-density-estimation/
 
-**Report issues**        https://github.com/FilippoAiraldi/torch-density-ratio/issues
-==================== =======================================================
+**Report issues**        https://github.com/FilippoAiraldi/torch-density-estimation/issues
+==================== =====================================================================
 
 
 It implements the Relative unconstrained Least-Squares Importance Fitting (RuLSIF)
@@ -27,6 +28,6 @@ References
 
 __version__ = "1.0.1"
 
-__all__ = ["rulsif_fit", "rulsif_predict"]
+__all__ = ["ratio"]
 
-from .rulsif import rulsif_fit, rulsif_predict
+from . import ratio

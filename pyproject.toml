@@ -3,11 +3,11 @@ requires = ["setuptools>=67.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "torchdensityratio"
+name = "torchdensityestimation"
 authors = [
   { name="Filippo Airaldi", email="filippoairaldi@gmail.com" },
 ]
-description = "Density Ratio Estimation with PyTorch"
+description = "Density Transform Estimation with PyTorch"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
@@ -21,16 +21,20 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Operating System :: OS Independent",
     "Intended Audience :: Science/Research",
-    "Topic :: Scientific/Engineering :: Mathematics",
-    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Machine Learning",
 ]
 dependencies = ["torch >= 2.7.0"]
-keywords = ["density-ratio-estimation", "machine-learning", "pytorch"]
+keywords = [
+    "density-ratio-estimation",
+    "density-difference-estimation",
+    "machine-learning",
+    "pytorch",
+]
 dynamic = ["version"]
 
 [project.urls]
-"Homepage" = "https://github.com/FilippoAiraldi/torch-density-ratio"
-"Bug Tracker" = "https://github.com/FilippoAiraldi/torch-density-ratio/issues"
+"Homepage" = "https://github.com/FilippoAiraldi/torch-density-estimation"
+"Bug Tracker" = "https://github.com/FilippoAiraldi/torch-density-estimation/issues"
 
 [tool.setuptools.dynamic]
-version = {attr = "torchdensityratio.__version__"}
+version = {attr = "torchdensityestimation.__version__"}
