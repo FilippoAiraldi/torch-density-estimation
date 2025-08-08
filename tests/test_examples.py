@@ -5,14 +5,14 @@ import torch
 from scipy.stats import multivariate_normal as mvnorm
 from scipy.stats import norm
 
-from torchdensityratio import rulsif_fit, rulsif_predict
+from torchdensityestimation import ratio
 
 
-class TestExamples(unittest.TestCase):
+class TestRatioExamples(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.data = torch.load(r"tests/examples_data.pt")
+        cls.data = torch.load(r"tests/ratio_examples_data.pt")
 
     def test_univariate(self):
         mean = 0
@@ -27,10 +27,11 @@ class TestExamples(unittest.TestCase):
             norm.rvs(size=n_samples, loc=mean, scale=std_y, random_state=rng)
         ).unsqueeze(1)
         alpha = 0.1
-        mdl = rulsif_fit(x, y, alpha, seed=int(rng.integers(0, 2**32)))
+        seed = int(rng.integers(0, 2**32))
+        mdl = ratio.rulsif_fit(x, y, alpha, seed=seed)
         n_vals = 200
         vals = torch.linspace(-1, 2, n_vals, dtype=x.dtype)
-        predicted = rulsif_predict(mdl, vals.reshape(-1, 1))
+        predicted = ratio.rulsif_predict(mdl, vals.reshape(-1, 1))
 
         data = self.data
         torch.testing.assert_close(
@@ -73,11 +74,12 @@ class TestExamples(unittest.TestCase):
         alpha = 0.0
         sigmas = torch.as_tensor([0.1, 0.3, 0.5, 0.7, 1.0], dtype=x.dtype)
         lambdas = torch.as_tensor([0.01, 0.02, 0.03, 0.04, 0.05], dtype=x.dtype)
-        mdl = rulsif_fit(x, y, alpha, sigmas, lambdas, seed=int(rng.integers(0, 2**32)))
+        seed = int(rng.integers(0, 2**32))
+        mdl = ratio.rulsif_fit(x, y, alpha, sigmas, lambdas, seed=seed)
         n_vals = 200
         vals = torch.linspace(0, 2, n_vals, dtype=x.dtype)
         grid = torch.dstack(torch.meshgrid(vals, vals, indexing="xy")).reshape(-1, 2)
-        predicted = rulsif_predict(mdl, grid).reshape(n_vals, n_vals)
+        predicted = ratio.rulsif_predict(mdl, grid).reshape(n_vals, n_vals)
 
         data = self.data
         torch.testing.assert_close(
