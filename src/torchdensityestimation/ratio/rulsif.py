@@ -32,7 +32,7 @@ def rulsif_fit(
     y : Tensor
         Samples from `q(x)`, shape `(n_samples_y, n_features)`.
     alpha : float, optional
-        The relative weights in the ratio denominator, by default 0.0.
+        The relative weights in the ratio denominator, by default `0.0`.
     sigma : float or Tensor, optional
         The bandwidth of the Gaussian kernel used for the density estimation. If `None`,
         a range of values will be automatically selected and the optimal value selected
@@ -46,7 +46,7 @@ def rulsif_fit(
         single float value is provided, it will be used as the regularization, without
         cross-validation. By default, `None`.
     kernel_num : int, optional
-        The number of kernel centers to use for the density estimation. If the number of
+        The number of kernel centers to use for the ratio estimation. If the number of
         samples in `x` is less than `kernel_num`, this will be set to `n_samples_x`. By
         default, `100`.
     seed : int, optional
@@ -162,7 +162,7 @@ def _sigma_lambd_cv(
 ) -> tuple[Tensor, Tensor]:
     """Computes the optimal sigma and lambda parameters for RuLSIF using
     leave-one-out cross-validation."""
-    n_lambds = lambds.shape[0]
+    n_lambds = lambds.numel()
     n_min = min(nx, ny)
 
     neg_half_precs = (-0.5 * sigmas.square().reciprocal())[:, None, None]
@@ -175,7 +175,7 @@ def _sigma_lambd_cv(
     phis_x = phis_x_[:, :n_min].unsqueeze(1).mT
     phis_y = phis_y_[:, :n_min].unsqueeze(1).mT
 
-    B = H.unsqueeze(1).repeat(1, lambds.numel(), 1, 1)  # cannot `.expand` here
+    B = H.unsqueeze(1).repeat(1, n_lambds, 1, 1)  # cannot `.expand` here
     B.diagonal(dim1=2, dim2=3).add_(((ny - 1) / ny * lambds).unsqueeze(-1))
 
     Binv_Y = torch.linalg.solve(B, phis_y)
