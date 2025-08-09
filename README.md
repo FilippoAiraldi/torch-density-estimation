@@ -1,33 +1,36 @@
-# Density Ratio Estimation with PyTorch
+# Density Transform Estimation with PyTorch
 
-**torchdensityratio** is a package that provides an implementation of the relative
-unconstrained least squares importance fitting (RuLSIF) algorithm for the estimation of
-ratio of probability densities (or density ratios) [[1](#1),[2](#2),[3](#3)]. The implementation is in PyTorch and
-follows a functional paradigm.
+**torchdensityestimation** is a package that provides implementations of algorithms for
+the estimation of density transforms (ratio, difference, etc.) using PyTorch and
+following a functional paradigm. The package currently implements
 
-[![PyPI version](https://badge.fury.io/py/torchdensityratio.svg)](https://badge.fury.io/py/torchdensityratio)
-[![Source Code License](https://img.shields.io/badge/license-MIT-blueviolet)](https://github.com/FilippoAiraldi/torch-density-ratio/blob/master/LICENSE)
+- Relative unconstrained Least-Squares Importance Fitting (RuLSIF), for the estimation
+  of ratio of probability densities (or density ratios) [[1](#1),[2](#2),[3](#3)]
+- Least-Squares Density-Difference (LSDD) for density differences [[4](#4)]
+
+[![PyPI version](https://badge.fury.io/py/torchdensityestimation.svg)](https://badge.fury.io/py/torchdensityestimation)
+[![Source Code License](https://img.shields.io/badge/license-MIT-blueviolet)](https://github.com/FilippoAiraldi/torch-density-estimation/blob/master/LICENSE)
 ![Python 3.10](https://img.shields.io/badge/python->=3.10-green.svg)
 
-[![Tests](https://github.com/FilippoAiraldi/torch-density-ratio/actions/workflows/tests.yml/badge.svg)](https://github.com/FilippoAiraldi/torch-density-ratio/actions/workflows/tests.yml)
-[![Downloads](https://static.pepy.tech/badge/torchdensityratio)](https://www.pepy.tech/projects/torchdensityratio)
-[![Maintainability](https://qlty.sh/gh/FilippoAiraldi/projects/torch-density-ratio/maintainability.svg)](https://qlty.sh/gh/FilippoAiraldi/projects/torch-density-ratio)
-[![Code Coverage](https://qlty.sh/gh/FilippoAiraldi/projects/torch-density-ratio/coverage.svg)](https://qlty.sh/gh/FilippoAiraldi/projects/torch-density-ratio)
+[![Tests](https://github.com/FilippoAiraldi/torch-density-estimation/actions/workflows/tests.yml/badge.svg)](https://github.com/FilippoAiraldi/torch-density-estimation/actions/workflows/tests.yml)
+[![Downloads](https://static.pepy.tech/badge/torchdensityestimation)](https://www.pepy.tech/projects/torchdensityestimation)
+[![Maintainability](https://qlty.sh/gh/FilippoAiraldi/projects/torch-density-estimation/maintainability.svg)](https://qlty.sh/gh/FilippoAiraldi/projects/torch-density-estimation)
+[![Code Coverage](https://qlty.sh/gh/FilippoAiraldi/projects/torch-density-estimation/coverage.svg)](https://qlty.sh/gh/FilippoAiraldi/projects/torch-density-estimation)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://docs.astral.sh/ruff/)
 
 ---
 
 ## Installation
 
-### Using `torchdensityratio`
+### Using `torchdensityestimation`
 
-You can use `pip` to install **torchdensityratio** with the command
+You can use `pip` to install **torchdensityestimation** with the command
 
 ```bash
-pip install torchdensityratio
+pip install torchdensityestimation
 ```
 
-**torchdensityratio** has the following dependencies
+**torchdensityestimation** has the following dependencies
 
 - Python 3.10 or higher
 - [PyTorch](https://pytorch.org/)
@@ -37,25 +40,26 @@ pip install torchdensityratio
 If you'd like to play around with the source code instead, run
 
 ```bash
-git clone https://github.com/FilippoAiraldi/torch-density-ratio.git
+git clone https://github.com/FilippoAiraldi/torch-density-estimation.git
 ```
 
 You can then install the package to edit it as you wish as
 
 ```bash
-pip install -e /path/to/torch-density-ratio
+pip install -e /path/to/torch-density-estimation
 ```
 
 ---
 
 ## Getting started
 
-Here we provide a compact example on how **torchdensityratio** can be employed to estimate the ratio of two probability density functions (PDFs) without the need to explicitly estimate the PDFs themselves. This can be done with different methods, but this package
-implements the relative unconstrained least squares importance fitting (RuLSIF) algorithm [[1](#1),[2](#2),[3](#3)].
+Here we provide a compact example on how **torchdensityestimation** can be employed to
+estimate the ratio of two probability density functions (PDFs) without the need to
+explicitly estimate the PDFs themselves. This can be done with different methods, but
+this package implements the relative unconstrained least squares importance fitting
+(RuLSIF) algorithm [[1](#1),[2](#2),[3](#3)].
 
-
-We start by generating some data from two different
-multivariate Gaussian distributions:
+We start by generating some data from two different multivariate Gaussian distributions:
 
 ```python
 import numpy as np
@@ -75,10 +79,11 @@ x = torch.from_numpy(mvnorm.rvs(size=n_samples, mean=mean, cov=cov_x, random_sta
 y = torch.from_numpy(mvnorm.rvs(size=n_samples, mean=mean, cov=cov_y, random_state=rng))
 ```
 
-We can then use the `torchdensityratio` package to estimate the ratio of the two PDFs using the RuLSIF algorithm as follows:
+We can then use the `torchdensityestimation` package to estimate the ratio of the two
+PDFs using the RuLSIF algorithm as follows:
 
 ```python
-from torchdensityratio import rulsif_fit, rulsif_predict
+from torchdensityestimation.ratio import rulsif_fit, rulsif_predict
 
 alpha = 0.1
 sigmas = torch.as_tensor([0.1, 0.3, 0.5, 0.7, 1.0], dtype=x.dtype)
@@ -86,7 +91,9 @@ lambdas = torch.as_tensor([0.01, 0.02, 0.03, 0.04, 0.05], dtype=x.dtype)
 mdl = rulsif_fit(x, y, alpha, sigmas, lambdas, seed=int(rng.integers(0, 2**32)))
 ```
 
-For reproducibility, we can set the `seed` argument to a fixed value. In this way, results are consistent across runs. Then, we evaluate the predicted density ratio on a grid of points, and compute also the true one for comparison:
+For reproducibility, we can set the `seed` argument to a fixed value. In this way,
+results are consistent across runs. Then, we evaluate the predicted density ratio on a
+grid of points, and compute also the true one for comparison:
 
 ```python
 n_vals = 200
@@ -118,14 +125,14 @@ plt.show()
 This code produces the following image:
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/FilippoAiraldi/torch-density-ratio/master/resources/demo.png" alt="torchdensityratio-demo" height="300">
+  <img src="https://raw.githubusercontent.com/FilippoAiraldi/torch-density-estimation/master/resources/demo.png" alt="torchdensityestimation-demo" height="300">
 </div>
 
 ---
 
 ## Examples
 
-Our [examples](https://github.com/FilippoAiraldi/torch-density-ratio/tree/master/examples)
+Our [examples](https://github.com/FilippoAiraldi/torch-density-estimation/tree/master/examples)
 subdirectory contains other example applications of this library.
 
 ---
@@ -155,8 +162,11 @@ Prof. Dr. Ir. Fred van Keulen, Dean of ME.
 
 ## Thanks
 
-This repository is heavily inspired by [hoxo-m/densratio_py](https://github.com/hoxo-m/densratio_py) and
-[JohnYKiyo/density_ratio_estimation](https://github.com/JohnYKiyo/density_ratio_estimation), please visit their repositories and star them if you find them useful!
+This repository is heavily inspired by
+[hoxo-m/densratio_py](https://github.com/hoxo-m/densratio_py) and
+[JohnYKiyo/density_ratio_estimation](https://github.com/JohnYKiyo/density_ratio_estimation),
+please visit their repositories and star them if you find them useful! Also, noteworthy
+is [this large repository of algorithms](https://www.ms.k.u-tokyo.ac.jp/sugi/software.html).
 
 ---
 
@@ -176,3 +186,8 @@ Neural Networks, 43, pp.72-83.
 Kanamori, T., Hido, S. and Sugiyama, M., 2009.
 [A least-squares approach to direct importance estimation](https://jmlr.csail.mit.edu/papers/volume10/kanamori09a/kanamori09a.pdf).
 The Journal of Machine Learning Research, 10, pp.1391-1445
+
+<a id="4">[4]</a>
+Sugiyama, M., Suzuki, T., Kanamori, T., Du Plessis, M. C., Liu, S., & Takeuchi, I., 2013.
+[Density-difference estimation](https://www.ms.k.u-tokyo.ac.jp/sugi/2013/LSDD.pdf).
+Neural Computation, 25(10), pp.2734-2775.

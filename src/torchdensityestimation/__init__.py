@@ -10,8 +10,10 @@ r"""**torchdensityestimation** is a package for the estimation of density transf
 ==================== =====================================================================
 
 
-It implements the Relative unconstrained Least-Squares Importance Fitting (RuLSIF)
-method for density ratio estimation [1,2,3].
+For density ratio estimation, this package implements the Relative unconstrained
+Least-Squares Importance Fitting (RuLSIF) method for density ratio estimation [1,2,3].
+For density difference estimation, it implements the Least-Squares Density-Difference
+(LSDD) [4].
 
 References
 ----------
@@ -24,10 +26,13 @@ References
 .. [3] Kanamori, T., Hido, S. and Sugiyama, M., 2009. A least-squares approach to direct
        importance estimation. The Journal of Machine Learning Research, 10,
        pp.1391-1445.
+.. [4] Sugiyama, M., Suzuki, T., Kanamori, T., Du Plessis, M. C., Liu, S., & Takeuchi,
+       I., 2013. Density-difference estimation. Neural Computation, 25(10),
+       pp.2734-2775.
 """
 
 __version__ = "1.0.1"
 
-__all__ = ["ratio"]
+__all__ = ["ratio", "difference"]
 
-from . import ratio
+from . import difference, ratio
