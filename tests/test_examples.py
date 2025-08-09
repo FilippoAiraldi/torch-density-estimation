@@ -5,7 +5,7 @@ import torch
 from scipy.stats import multivariate_normal as mvnorm
 from scipy.stats import norm
 
-from torchdensityestimation import ratio
+from torchdensityestimation import ratio, difference
 
 
 class TestRatioExamples(unittest.TestCase):
@@ -106,6 +106,56 @@ class TestRatioExamples(unittest.TestCase):
             predicted,
             data["multivariate_prediction"],
             msg="Multivariate prediction mismatch",
+        )
+
+
+class TestDifferenceExamples(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.data = torch.load(r"tests/difference_examples_data.pt")
+
+    def test_univariate(self):
+        mean_x = 0
+        mean_y = 1
+        std = 1
+        n_samples = 50
+        rng = np.random.default_rng(0)
+        x = torch.from_numpy(
+            norm.rvs(size=n_samples, loc=mean_x, scale=std, random_state=rng)
+        ).unsqueeze(1)
+        y = torch.from_numpy(
+            norm.rvs(size=n_samples, loc=mean_y, scale=std, random_state=rng)
+        ).unsqueeze(1)
+        seed = int(rng.integers(0, 2**32))
+        mdl = difference.lsdd_fit(x, y, seed=seed)
+        n_vals = 200
+        vals = torch.linspace(-5, 5, n_vals, dtype=x.dtype)
+        predicted = difference.lsdd_predict(mdl, vals.reshape(-1, 1))
+
+        data = self.data
+        torch.testing.assert_close(
+            mdl.negative_half_precision,
+            data["univariate_negative_half_precision"],
+            msg="Univariate negative half precision mismatch",
+        )
+        torch.testing.assert_close(
+            mdl.regularization,
+            data["univariate_regularization"],
+            msg="Univariate regularization mismatch",
+        )
+        torch.testing.assert_close(
+            mdl.centers, data["univariate_centers"], msg="Univariate centers mismatch"
+        )
+        torch.testing.assert_close(
+            mdl.coeffs,
+            data["univariate_coeffs"],
+            msg="Univariate coefficients mismatch",
+        )
+        torch.testing.assert_close(
+            predicted,
+            data["univariate_prediction"],
+            msg="Univariate prediction mismatch",
         )
 
 
