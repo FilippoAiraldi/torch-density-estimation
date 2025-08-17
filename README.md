@@ -155,7 +155,7 @@ in [Delft University of Technology](https://www.tudelft.nl/en/)
 Copyright (c) 2025 Filippo Airaldi.
 
 Copyright notice: Technische Universiteit Delft hereby disclaims all copyright interest
-in the program “csnlp” (Nonlinear Progamming with CasADi) written by the Author(s).
+in the program “torchdensityestimation” written by the Author(s).
 Prof. Dr. Ir. Fred van Keulen, Dean of ME.
 
 ---
